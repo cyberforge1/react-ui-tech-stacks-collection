@@ -1,0 +1,83 @@
+// src/__tests__/api/api.test.ts
+
+import axios from 'axios';
+import MockAdapter from 'axios-mock-adapter';
+import {
+  getTodos,
+  getTodoById,
+  createTodo,
+  updateTodo,
+  deleteTodo,
+  getHelloWorld,
+  getMainMessage,
+} from '../../api/api';
+
+describe('API Tests', () => {
+  const API_BASE_URL = 'http://localhost:5001/api';
+  let mock: InstanceType<typeof MockAdapter>; // Use InstanceType to properly type the mock
+
+  beforeAll(() => {
+    mock = new MockAdapter(axios); // Initialize the mock adapter
+  });
+
+  afterEach(() => {
+    mock.reset(); // Reset mock state after each test
+  });
+
+  afterAll(() => {
+    mock.restore(); // Restore Axios's original behavior
+  });
+
+  it('should fetch the main message', async () => {
+    mock.onGet(`${API_BASE_URL}/`).reply(200, { message: 'Welcome to the Todo Management API!' });
+
+    const response = await getMainMessage();
+    expect(response).toEqual('Welcome to the Todo Management API!');
+  });
+
+  it('should fetch the Hello World message', async () => {
+    mock.onGet(`${API_BASE_URL}/helloworld/`).reply(200, { message: 'Hello, World!' });
+
+    const response = await getHelloWorld();
+    expect(response).toEqual('Hello, World!');
+  });
+
+  it('should fetch all todos', async () => {
+    const todos = [{ id: 1, title: 'Test Todo' }];
+    mock.onGet(`${API_BASE_URL}/todos/`).reply(200, { todos });
+
+    const response = await getTodos();
+    expect(response).toEqual(todos);
+  });
+
+  it('should fetch a todo by ID', async () => {
+    const todo = { id: 1, title: 'Test Todo' };
+    mock.onGet(`${API_BASE_URL}/todos/1/`).reply(200, { todo });
+
+    const response = await getTodoById(1);
+    expect(response).toEqual(todo);
+  });
+
+  it('should create a new todo', async () => {
+    const newTodo = { id: 2, title: 'New Todo' };
+    mock.onPost(`${API_BASE_URL}/todos/`).reply(201, { todo: newTodo });
+
+    const response = await createTodo({ title: 'New Todo' });
+    expect(response).toEqual(newTodo);
+  });
+
+  it('should update a todo', async () => {
+    const updatedTodo = { id: 1, title: 'Updated Todo' };
+    mock.onPut(`${API_BASE_URL}/todos/1/`).reply(200, { todo: updatedTodo });
+
+    const response = await updateTodo(1, { title: 'Updated Todo' });
+    expect(response).toEqual(updatedTodo);
+  });
+
+  it('should delete a todo', async () => {
+    mock.onDelete(`${API_BASE_URL}/todos/1/`).reply(200, { message: 'Todo deleted' });
+
+    const response = await deleteTodo(1);
+    expect(response.message).toEqual('Todo deleted');
+  });
+});
