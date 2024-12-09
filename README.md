@@ -1,1 +1,1 @@
-# React Ui Tech Stacks Collection
+# React UI Tech Stacks Collection
