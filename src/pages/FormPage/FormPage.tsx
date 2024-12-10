@@ -6,7 +6,7 @@ import { getTodos, createTodo, updateTodo, deleteTodo } from '../../api/api';
 import { Todo } from '../../types/types';
 
 const FormPage: React.FC = () => {
-  const [todos, setTodos] = useState<Todo[]>([]); // Ensure todos is initialized as an empty array
+  const [todos, setTodos] = useState<Todo[]>([]); // Initialize todos as an empty array
   const [isEditing, setIsEditing] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -15,11 +15,16 @@ const FormPage: React.FC = () => {
     loadTodos();
   }, []);
 
+  /**
+   * Fetches the todos from the backend and updates the state.
+   */
   const loadTodos = async () => {
     setIsLoading(true);
     try {
+      console.log('Fetching todos...');
       const data = await getTodos();
-      setTodos(data || []); // Ensure todos is always an array
+      console.log('Todos fetched successfully:', data);
+      setTodos(data || []); // Always ensure `todos` is an array
       setError(null);
     } catch (error) {
       console.error('Error loading todos:', error);
@@ -30,9 +35,15 @@ const FormPage: React.FC = () => {
     }
   };
 
+  /**
+   * Adds a new todo by calling the API.
+   * @param title - Title of the new todo
+   */
   const handleAddTodo = async (title: string) => {
     try {
+      console.log('Adding todo:', title);
       await createTodo({ title });
+      console.log('Todo added successfully.');
       loadTodos();
     } catch (error) {
       console.error('Error adding todo:', error);
@@ -40,23 +51,36 @@ const FormPage: React.FC = () => {
     }
   };
 
+  /**
+   * Updates an existing todo by calling the API.
+   * @param id - ID of the todo to update
+   * @param title - Updated title of the todo
+   */
   const handleUpdateTodo = async (id: number, title: string) => {
     try {
+      console.log(`Updating todo (ID: ${id}) with title:`, title);
       await updateTodo(id, { title });
+      console.log('Todo updated successfully.');
       loadTodos();
       setIsEditing(null);
     } catch (error) {
-      console.error('Error updating todo:', error);
+      console.error(`Error updating todo (ID: ${id}):`, error);
       setError('Failed to update todo. Please try again.');
     }
   };
 
+  /**
+   * Deletes a todo by calling the API.
+   * @param id - ID of the todo to delete
+   */
   const handleDeleteTodo = async (id: number) => {
     try {
+      console.log(`Deleting todo (ID: ${id})`);
       await deleteTodo(id);
+      console.log('Todo deleted successfully.');
       loadTodos();
     } catch (error) {
-      console.error('Error deleting todo:', error);
+      console.error(`Error deleting todo (ID: ${id}):`, error);
       setError('Failed to delete todo. Please try again.');
     }
   };

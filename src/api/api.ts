@@ -1,7 +1,7 @@
 // src/api/api.ts
 
 import axios, { AxiosResponse } from 'axios';
-import { Todo, TodoCreation, TodoUpdate, TodoListResponse, TodoResponse, ApiResponse } from '../types/types';
+import { Todo, TodoCreation, TodoUpdate, ApiResponse } from '../types/types';
 
 const API_BASE_URL = 'http://localhost:5001/api'; // Flask API base URL
 
@@ -30,8 +30,9 @@ export const getHelloWorld = async (): Promise<string> => {
 // Get all todos
 export const getTodos = async (): Promise<Todo[]> => {
   try {
-    const response: AxiosResponse<TodoListResponse> = await axios.get(`${API_BASE_URL}/todos/`);
-    return response.data.todos;
+    const response: AxiosResponse<Todo[]> = await axios.get(`${API_BASE_URL}/todos/`);
+    console.log('Fetched todos:', response.data); // Debugging log
+    return response.data; // Directly return the array of todos
   } catch (error) {
     console.error('Error fetching todos:', error);
     throw error;
@@ -41,8 +42,8 @@ export const getTodos = async (): Promise<Todo[]> => {
 // Get a single todo by ID
 export const getTodoById = async (id: number): Promise<Todo> => {
   try {
-    const response: AxiosResponse<TodoResponse> = await axios.get(`${API_BASE_URL}/todos/${id}/`);
-    return response.data.todo!;
+    const response: AxiosResponse<Todo> = await axios.get(`${API_BASE_URL}/todos/${id}/`);
+    return response.data;
   } catch (error) {
     console.error(`Error fetching todo with ID ${id}:`, error);
     throw error;
@@ -52,8 +53,8 @@ export const getTodoById = async (id: number): Promise<Todo> => {
 // Create a new todo
 export const createTodo = async (todo: TodoCreation): Promise<Todo> => {
   try {
-    const response: AxiosResponse<TodoResponse> = await axios.post(`${API_BASE_URL}/todos/`, todo);
-    return response.data.todo!;
+    const response: AxiosResponse<Todo> = await axios.post(`${API_BASE_URL}/todos/`, todo);
+    return response.data;
   } catch (error) {
     console.error('Error creating todo:', error);
     throw error;
@@ -63,8 +64,8 @@ export const createTodo = async (todo: TodoCreation): Promise<Todo> => {
 // Update an existing todo
 export const updateTodo = async (id: number, todoUpdate: TodoUpdate): Promise<Todo> => {
   try {
-    const response: AxiosResponse<TodoResponse> = await axios.put(`${API_BASE_URL}/todos/${id}/`, todoUpdate);
-    return response.data.todo!;
+    const response: AxiosResponse<Todo> = await axios.put(`${API_BASE_URL}/todos/${id}/`, todoUpdate);
+    return response.data;
   } catch (error) {
     console.error(`Error updating todo with ID ${id}:`, error);
     throw error;
