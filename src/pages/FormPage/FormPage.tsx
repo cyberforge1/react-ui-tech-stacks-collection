@@ -67,23 +67,26 @@ const FormPage: React.FC = () => {
       ) : (
         <ul>
           {todos.length > 0 ? (
-            todos.map((todo) => (
-              <li key={todo.id}>
-                {isEditing === todo.id ? (
-                  <TodoForm
-                    onSubmit={(title) => handleUpdateTodo(todo.id, title)}
-                    initialTitle={todo.title}
-                    buttonText="Update Todo"
-                  />
-                ) : (
-                  <>
-                    <h3>{todo.title}</h3>
-                    <button onClick={() => setIsEditing(todo.id)}>Edit</button>
-                    <button onClick={() => handleDeleteTodo(todo.id)}>Delete</button>
-                  </>
-                )}
-              </li>
-            ))
+            todos
+              .slice() // Create a shallow copy to avoid mutating the original array
+              .reverse() // Reverse the order of todos
+              .map((todo) => (
+                <li key={todo.id}>
+                  {isEditing === todo.id ? (
+                    <TodoForm
+                      onSubmit={(title) => handleUpdateTodo(todo.id, title)}
+                      initialTitle={todo.title}
+                      buttonText="Update Todo"
+                    />
+                  ) : (
+                    <>
+                      <h3>{todo.title}</h3>
+                      <button onClick={() => setIsEditing(todo.id)}>Edit</button>
+                      <button onClick={() => handleDeleteTodo(todo.id)}>Delete</button>
+                    </>
+                  )}
+                </li>
+              ))
           ) : (
             <p>No todos available</p>
           )}
