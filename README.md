@@ -5,6 +5,8 @@
 
 ## Diagram
 
+``` markdown
+
 root/
 ├── src/
 │   ├── api/
@@ -32,3 +34,5 @@ root/
 │   └── main.test.ts
 ├── styles.css
 └── README.md
+
+```
