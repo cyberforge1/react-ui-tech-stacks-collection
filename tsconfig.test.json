@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "types": ["vitest", "node"], // Include Vitest and Node types
+    "moduleResolution": "node", // Ensures proper resolution of modules
+    "noEmit": true // No compiled output for test files
+  },
+  "include": ["src/**/*.test.ts", "src/**/*.test.tsx"], // Only include test files
+  "exclude": ["node_modules"] // Exclude node_modules
+}
