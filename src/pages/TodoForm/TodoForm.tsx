@@ -3,23 +3,22 @@
 import React, { useState } from 'react';
 
 interface TodoFormProps {
-  onSubmit: (title: string) => void;
+  onSubmit: (title: string) => Promise<void> | void;
   initialTitle?: string;
   buttonText: string;
 }
 
 const TodoForm: React.FC<TodoFormProps> = ({ onSubmit, initialTitle = '', buttonText }) => {
+  if (typeof initialTitle !== 'string') {
+    throw new Error('initialTitle must be a string');
+  }
+
   const [title, setTitle] = useState(initialTitle);
   const [error, setError] = useState<string | null>(null);
 
-  /**
-   * Handles form submission and calls the onSubmit callback.
-   * @param e - Form event
-   */
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validation: Ensure the title is not empty or whitespace
     if (!title.trim()) {
       setError('Title is required.');
       return;
@@ -27,8 +26,8 @@ const TodoForm: React.FC<TodoFormProps> = ({ onSubmit, initialTitle = '', button
 
     try {
       setError(null); // Clear any previous errors
-      console.log('Submitting title:', title); // Debugging log
-      onSubmit(title.trim());
+      console.log('Submitting title:', title);
+      await onSubmit(title.trim());
       setTitle(''); // Reset form after successful submission
     } catch (error) {
       console.error('Error during submission:', error);
@@ -38,14 +37,20 @@ const TodoForm: React.FC<TodoFormProps> = ({ onSubmit, initialTitle = '', button
 
   return (
     <form onSubmit={handleSubmit}>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {error && (
+        <p style={{ color: 'red' }} aria-live="polite">
+          {error}
+        </p>
+      )}
       <input
         type="text"
         name="title"
         value={title}
-        onChange={(e) => setTitle(e.target.value)}
+        onChange={(e) => {
+          setTitle(e.target.value);
+          if (error) setError(null);
+        }}
         placeholder="Title"
-        required
       />
       <button type="submit">{buttonText}</button>
     </form>
