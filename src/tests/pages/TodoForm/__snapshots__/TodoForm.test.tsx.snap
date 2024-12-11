@@ -1,13 +1,16 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`FormPage Component > matches the snapshot 1`] = `
-<div>
+<div
+  data-testid="form-page"
+>
   <h1>
     Todo Management
   </h1>
-  <form>
+  <form
+    data-testid="todo-form"
+  >
     <input
-      name="title"
       placeholder="Title"
       type="text"
       value=""

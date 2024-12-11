@@ -16,8 +16,7 @@ const StaticPage: React.FC = () => {
         const fetchedMessage = await getMainMessage();
         setMessage(fetchedMessage);
         setError(null);
-      } catch (error) {
-        console.error('Failed to fetch message', error);
+      } catch {
         setError('Failed to load the message. Please try again later.');
       } finally {
         setIsLoading(false);
@@ -32,7 +31,7 @@ const StaticPage: React.FC = () => {
   };
 
   return (
-    <div>
+    <div data-testid="static-page">
       {isLoading ? (
         <p>Loading...</p>
       ) : error ? (
@@ -40,7 +39,9 @@ const StaticPage: React.FC = () => {
       ) : (
         <h1>{message}</h1>
       )}
-      <button onClick={redirectToForm}>Go to Form</button>
+      <button onClick={redirectToForm} aria-label="Go to Form">
+        Go to Form
+      </button>
     </div>
   );
 };

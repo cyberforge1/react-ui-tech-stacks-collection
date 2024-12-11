@@ -9,10 +9,6 @@ interface TodoFormProps {
 }
 
 const TodoForm: React.FC<TodoFormProps> = ({ onSubmit, initialTitle = '', buttonText }) => {
-  if (typeof initialTitle !== 'string') {
-    throw new Error('initialTitle must be a string');
-  }
-
   const [title, setTitle] = useState(initialTitle);
   const [error, setError] = useState<string | null>(null);
 
@@ -25,31 +21,21 @@ const TodoForm: React.FC<TodoFormProps> = ({ onSubmit, initialTitle = '', button
     }
 
     try {
-      setError(null); // Clear any previous errors
-      console.log('Submitting title:', title);
+      setError(null);
       await onSubmit(title.trim());
-      setTitle(''); // Reset form after successful submission
-    } catch (error) {
-      console.error('Error during submission:', error);
+      setTitle('');
+    } catch {
       setError('Failed to submit. Please try again.');
     }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      {error && (
-        <p style={{ color: 'red' }} aria-live="polite">
-          {error}
-        </p>
-      )}
+    <form onSubmit={handleSubmit} data-testid="todo-form">
+      {error && <p style={{ color: 'red' }}>{error}</p>}
       <input
         type="text"
-        name="title"
         value={title}
-        onChange={(e) => {
-          setTitle(e.target.value);
-          if (error) setError(null);
-        }}
+        onChange={(e) => setTitle(e.target.value)}
         placeholder="Title"
       />
       <button type="submit">{buttonText}</button>
